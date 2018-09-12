@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<form id="form_data">
+    <div class="modal-body">
+        email: <input type="text" class="form-control" id="email" name="email"/><br/>
+        password: <input type="password" class="form-control" id="password" name="password"/><br/>
+        repeat: <input type="password" class="form-control" id="password_r" name="password_r"/><br/>
+        username: <input type="text" class="form-control" id="username" name="nickname"/><br/>
+
+        <div class="text-right">
+            <label id="res"></label>
+            <button type="submit" class="btn btn-primary" id="btn-submit">register</button>
+        </div>
+
+    </div>
+</form>
+
+</body>
+
+<script>
+    $(document).ready(function () {
+        $("#form_data").submit(function (event) {
+            //stop submit the form, we will post it manually.
+            event.preventDefault();
+            ajax_submit();
+        });
+
+    });
+
+    function ajax_submit() {
+        var user = {};
+        user["email"] = $("#email").val();
+        user['username'] = $("#username").val();
+        user["password"] = $("#password").val();
+        user["password_r"] = $("#password_r").val();
+        //$("#btn-submit").prop("disabled",true);
+        window.alert(user["email"]);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/api/register",
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                //window.alert("success");
+                $("#res").text(data.res);
+                if(data.res == "success"){
+                    window.location.href="/congrats";
+                }
+
+            },
+            error: function (e) {
+                window.alert("fail");
+                $("#res").text(e);
+            }
+        });
+
+    }
+</script>
+
+</html>

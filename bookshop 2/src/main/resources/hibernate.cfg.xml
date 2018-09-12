@@ -3,6 +3,7 @@
 
     <persistence-unit name="persistenceUnit">
         <class>com.lomebook.enti.BooksEntity</class>
+        <class>com.lomebook.enti.UsersEntity</class>
         <properties>
             <property name="toplink.jdbc.url"
                       value="jdbc:sqlserver://10.211.55.6\SQLEXPRESS:49808;databaseName=book_shop3;useUnicode=true;characterEncoding=UTF-8"/>

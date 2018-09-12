@@ -9,7 +9,7 @@
   <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+<input type="text" id="t" hidden/>
 <div class="container">
   <div class="jumbotron">
     <h1>我的第一个 Bootstrap 页面</h1>
@@ -33,6 +33,10 @@
     </div>
   </div>
 </div>
-
+<script>
+  $(document).ready(function(){
+    $("#t").hidden=false;
+  });
+</script>
 </body>
 </html>
