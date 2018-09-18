@@ -4,9 +4,18 @@
     <persistence-unit name="persistenceUnit">
         <class>com.lomebook.enti.BooksEntity</class>
         <class>com.lomebook.enti.UsersEntity</class>
+        <class>com.lomebook.enti.SearchDetailsEntity</class>
+        <class>com.lomebook.enti.CartEntity</class>
+        <class>com.lomebook.enti.UserInfoEntity</class>
+        <class>com.lomebook.enti.RoleEntity</class>
+        <class>com.lomebook.enti.UserInfoRoleEntity</class>
+        <class>com.lomebook.enti.CategoriesEntity</class>
+        <class>com.lomebook.enti.PublishersEntity</class>
+        <class>com.lomebook.enti.OrderBookEntity</class>
+        <class>com.lomebook.enti.OrdersEntity</class>
         <properties>
             <property name="toplink.jdbc.url"
-                      value="jdbc:sqlserver://10.211.55.6\SQLEXPRESS:49808;databaseName=book_shop3;useUnicode=true;characterEncoding=UTF-8"/>
+                      value="jdbc:sqlserver://localhost\MSSQLSERVER:1433;database=book_shop3"/>
             <property name="toplink.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
             <property name="hibernate.connection.url"
                       value="jdbc:sqlserver://10.211.55.6\SQLEXPRESS:49808;databaseName=book_shop3;useUnicode=true;characterEncoding=UTF-8"/>

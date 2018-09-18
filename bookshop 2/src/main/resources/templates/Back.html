@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="bootstrap-3.3.4/dist/css/bootstrap.min.css"/>
+    <!--<link rel="stylesheet" href="Flat-UI-master/dist/css/flat-ui.min.css"/>-->
+    <script src="Flat-UI-master/dist/js/vendor/jquery.min.js"></script>
+    <script src="bootstrap-3.3.4/dist/js/bootstrap.min.js"></script>
+    <!--<script src="Flat-UI-master/dist/js/flat-ui.min.js"></script>-->
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <ul class="nav navbar-nav navbar-right hidden-sm">
+            <!--<li><a href="/Login" th:text="${session.user}!=null?${session.user}:'登陆'">登录</a></li>-->
+            <li><a th:if="${session.userback}!=null" th:text="${session.user}" href="/"></a></li>
+            <li><a th:if="${session.userback}!=null" th:text="logout" href="/api/logout_b"></a></li>
+        </ul>
+    <div class="col-xs-12">
+        <ul id="myTab" class="nav nav-tabs">
+            <li class="active"><a href="#book" data-toggle="tab">图书管理</a></li>
+            <li><a href="#userinfo" data-toggle="tab">用户管理</a></li>
+            <li><a href="#role" data-toggle="tab">角色管理</a></li>
+            <li><a href="#cate" data-toggle="tab">分类管理</a></li>
+            <li><a href="#pub" data-toggle="tab">出版社管理</a></li>
+
+        </ul>
+        <div id="myTabContent" class="tab-content">
+
+            <div class="tab-pane fade in active" id="book">
+                <div class="col-xs-2">
+                    <ul class="list-unstyled">
+                        <li><button type="button" class="btn btn-primary btn-lg" onclick="addbookShow()">添加</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg" onclick="deletebook()">删除</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg">编辑</button></li>
+                    </ul>
+                </div>
+                <div class="col-xs-10">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="allbook"/></th>
+                            <th>编号</th>
+                            <th>图书名称</th>
+                            <th>作者</th>
+                            <th>价格</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="book:${books}">
+                            <td ><input class="booklist" type="checkbox" th:name="${book.id}"/></td>
+                            <td th:text="${book.id}"></td>
+                            <td th:text="${book.title}">001</td>
+                            <td th:text="${book.author}">Rammohan </td>
+                            <td th:text="${book.unitPrice}">Reddy</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-primary" type="button" onclick="previousAjax()">上一页</button>
+                <button class="btn btn-primary" type="button" onclick="nextAjax()">下一页</button>
+            </div>
+            <div class="tab-pane fade" id="userinfo" >
+                <div class="col-xs-2">
+                <ul class="list-unstyled">
+                    <li><button type="button" class="btn btn-primary btn-lg" onclick="modelShow()">添加</button></li>
+                    <li><button type="button" class="btn btn-primary btn-lg" onclick="deleteuserinfo()">删除</button></li>
+                    <li><button type="button" class="btn btn-primary btn-lg"  onclick="setrole()">设定角色</button></li>
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+
+                                    <h4 class="modal-title" id="myModalLabel" >
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <td></td>
+                                            <td>角色</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="role:${roles}">
+                                            <td><input  class="role" type="checkbox" th:name="${role.id}"></td>
+                                            <td th:text="${role.roleName}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="setroleAjax()">
+                                        提交更改
+                                    </button>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal -->
+                    </div>
+                </ul>
+                </div>
+                <div class="col-xs-10">
+                <table class="table">
+                <thead>
+                <tr>
+                    <th><input type="checkbox" id="alluserinfo"/></th>
+                    <th>编号</th>
+                    <th>用户名</th>
+                    <th>密码</th>
+                    <th>邮箱</th>
+                    <th>regtime</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="userinfo:${users}">
+                    <td ><input class="userinfo" type="checkbox" th:name="${userinfo.id}"/></td>
+                    <td th:text="${userinfo.id}">001</td>
+                    <td th:text="${userinfo.userName}">Rammohan </td>
+                    <td th:text="${userinfo.userPass}">Reddy</td>
+                    <td th:text="${userinfo.email}"></td>
+                    <td th:text="${userinfo.regTime}"></td>
+                </tr>
+                </tbody>
+                </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="role">
+                <div class="col-xs-2">
+                    <ul class="list-unstyled">
+                        <li><button type="button" class="btn btn-primary btn-lg" onclick="rolevaddShow()">添加</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg" onclick="deleterole()">删除</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg">编辑</button></li>
+                    </ul>
+                </div>
+                <div class="col-xs-10">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="allrole"/></th>
+                            <th>编号</th>
+                            <th>名字</th>
+                            <th>Delflag</th>
+                            <th>RoleType</th>
+                            <th>subtime</th>
+                            <th>remark</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="role:${roles}">
+                            <td ><input class="rolelist" type="checkbox" th:name="${role.id}"/></td>
+                            <td th:text="${role.id}"></td>
+                            <td th:text="${role.roleName}">001</td>
+                            <td th:text="${role.delFlag}">Rammohan </td>
+                            <td th:text="${role.roleType}">Reddy</td>
+                            <td th:text="${role.subTime}"></td>
+                            <td th:text="${role.remark}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="cate">
+                <div class="col-xs-2">
+                    <ul class="list-unstyled">
+                        <li><button type="button" class="btn btn-primary btn-lg" onclick="cateaddShow()">添加</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg"  onclick="deletecate()">删除</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg">编辑</button></li>
+                    </ul>
+                </div>
+                <div class="col-xs-10">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="allcate"/></th>
+                            <th>id</th>
+                            <th>类名名称</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="cate:${cates}">
+                            <td ><input class="catelist" type="checkbox" th:name="${cate.id}"/></td>
+                            <td th:text="${cate.id}">001</td>
+                            <td th:text="${cate.name}">Rammohan </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pub">
+                <div class="col-xs-2">
+                    <ul class="list-unstyled">
+                        <li><button type="button" class="btn btn-primary btn-lg" onclick="pubaddShow()">添加</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg" onclick="deletepub()">删除</button></li>
+                        <li><button type="button" class="btn btn-primary btn-lg">编辑</button></li>
+                    </ul>
+                </div>
+                <div class="col-xs-10">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="allpub"/></th>
+                            <th>id</th>
+                            <th>出版社名称</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="pub:${pubs}">
+                            <td ><input class="publist" type="checkbox" th:name="${pub.id}"/></td>
+                            <td th:text="${pub.id}">001</td>
+                            <td th:text="${pub.name}">Rammohan </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="inforeg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" id="myModalLabel2" >
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="adduserinfo">
+                    <div class="form-group">
+                        <label for="infoname">用户名</label>
+                        <input type="text" class="form-control" id="infoname" placeholder="请输入用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="infopwd">密码</label>
+                        <input type="text" class="form-control" id="infopwd" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="infoemail">邮箱</label>
+                        <input type="text" class="form-control" id="infoemail" placeholder="请输入邮箱">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="inforegAjax()">
+                    添加
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="modal fade" id="rolereg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" >
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form >
+                    <div class="form-group">
+                        <label for="rolename">用户名</label>
+                        <input type="text" class="form-control" id="rolename" placeholder="请输入用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleflag">DelFlag</label>
+                        <input type="text" class="form-control" id="roleflag" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="roletype">RoleType</label>
+                        <input type="text" class="form-control" id="roletype" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">remark</label>
+                        <input type="text" class="form-control" id="roleremark" placeholder="remark">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="roleaddAjax()">
+                    添加
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="modal fade" id="bookreg" tabindex="-1" role="dialog" aria-label0ledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" >
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="pic">
+                    <label for="bookpic">封面图片</label>
+                    <input type="file" id="bookpic" name="bookpic">
+                </form>
+                <form >
+                    <div class="form-group">
+                        <label for="rolename">标题</label>
+                        <input type="text" class="form-control" id="booktile" placeholder="请输入用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleflag">作者</label>
+                        <input type="text" class="form-control" id="bookauthor" placeholder="">
+                    </div>
+                    <!--<div class="form-group">-->
+                        <!--<label for="roletype">出版社</label>-->
+                        <!--<input type="text" class="form-control" id="roletype" placeholder="">-->
+                    <!--</div>-->
+                    <div class="form-group">
+                        <label>出版社</label>
+                        <select class="form-control" id="bookpub">
+                            <option th:each="pub:${pubs}" th:text="${pub.name}" th:value="${pub.id}">1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">出版时间</label>
+                        <input type="text" class="form-control" id="booktime" placeholder="yyyy-mm-dd hh:mm:ss">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">ISBN</label>
+                        <input type="text" class="form-control" id="bookisbn" placeholder="isbn">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">字数</label>
+                        <input type="text" class="form-control" id="bookcount" placeholder="remark">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">单价</label>
+                        <input type="text" class="form-control" id="bookprice" placeholder="remark">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">内容简介</label>
+                        <input type="text" class="form-control" id="bookcontent" placeholder="remark">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">作者简介</label>
+                        <input type="text" class="form-control" id="bookaucontent" placeholder="remark">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">编者评价</label>
+                        <input type="text" class="form-control" id="bookedit" placeholder="remark">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleremark">目录</label>
+                        <input type="text" class="form-control" id="booktoc" placeholder="remark">
+                    </div>
+                    <div class="form-group">
+                        <label>图书分类</label>
+                        <select class="form-control" id="bookcate">
+                            <option th:each="cate:${cates}" th:text="${cate.name}" th:value="${cate.id}">1</option>
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="bookaddAjax()">
+                    添加
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="modal fade" id="catereg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" >
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form >
+                    <div class="form-group">
+                        <label for="rolename">标题</label>
+                        <input type="text" class="form-control" id="catename" placeholder="请输入用户名">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="cateaddAjax()">
+                    添加
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="modal fade" id="pubreg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" >
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form >
+                    <div class="form-group">
+                        <label for="rolename">标题</label>
+                        <input type="text" class="form-control" id="pubname" placeholder="请输入用户名">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="cateaddAjax()">
+                    添加
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+</body>
+
+<script>
+
+    function previousAjax() {
+        $.ajax({
+            type: "POST",
+            url: "/api/previous_b",
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                window.location.reload()
+                $('#myTab li:eq(2) a').tab('show');
+            },
+            error: function (e) {
+
+            }
+        });
+    };
+
+    function nextAjax() {
+        $.ajax({
+            type: "POST",
+            url: "/api/next_b",
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                window.location.reload()
+                $('#myTab li:eq(2) a').tab('show');
+            },
+            error: function (e) {
+
+            }
+        });
+    };
+
+    function pubaddAjax() {
+        var user = {}
+        user['cate'] = $('#pubname').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/api/pubadd",
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                if(data.res == "success"){
+                    window.alert("添加成功");
+                    $('#pubreg').modal('hide');
+                    window.location.reload();
+                }
+            },
+            error: function (e) {
+                window.alert("fail");
+            }
+        });
+
+    }
+
+    function pubaddShow() {
+        $('#pubreg').modal('show');
+
+    }
+
+    function cateaddAjax() {
+        var user = {}
+        user['cate'] = $('#catename').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/api/cateadd",
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                if(data.res == "success"){
+                    window.alert("添加成功");
+                    $('#bookreg').modal('hide');
+                    window.location.reload();
+                }
+            },
+            error: function (e) {
+                window.alert("fail");
+            }
+        });
+
+    }
+
+
+    function cateaddShow() {
+        $('#catereg').modal('show');
+    }
+
+    function bookaddAjax() {
+        var user = {};
+        user['booktitle'] = $('#booktile').val();
+        user['bookauthor'] = $('#bookauthor').val();
+        user['bookpub'] = $('#bookpub').val();
+        window.alert(user['bookpub']);
+        user['booktime'] = $('#booktime').val();
+        user['bookisbn'] = $('#bookisbn').val();
+        user['bookcount'] = $('#bookcount').val();
+        user['bookprice'] = $('#bookprice').val();
+        user['bookcontent'] = $('#bookcontent').val();
+        user['bookaucontent'] = $('#bookaucontent').val();
+        user['bookedit'] = $('#bookedit').val();
+        user['booktoc'] = $('#booktoc').val();
+        user['bookcate'] = $('#bookcate').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/api/bookadd",
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                if(data.res == "success"){
+                    window.alert("添加成功");
+                    $('#bookreg').modal('hide');
+                    window.location.reload();
+                    var formData = new FormData($('#pic')[0]);
+                    formData.append("isbn",user['bookisbn']);
+                    $.ajax({
+                        type: 'post',
+                        url: "/api/uploadpic",
+                        data: formData,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                    }).success(function (data) {
+                        alert(data);
+                    }).error(function () {
+                        alert("上传失败");
+                    });
+
+                }
+            },
+            error: function (e) {
+                window.alert("fail");
+            }
+        });
+
+
+    }
+
+    function addbookShow() {
+        $('#bookreg').modal('show');
+    }
+
+    function roleaddAjax() {
+        var user = {};
+        var liuyishabi;
+        user['rolename'] = $('#rolename').val();
+        user['roleflag'] = $('#roleflag').val();
+        user['roletype'] = $('#roletype').val();
+        user['roleremark'] = $('#roleremark').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/api/roleadd",
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                if(data.res == "success"){
+                    window.alert("添加成功");
+                    $('#rolereg').modal('hide');
+                    window.location.reload();
+                }
+            },
+            error: function (e) {
+                window.alert("fail");
+            }
+        });
+
+
+    }
+
+
+    function rolevaddShow() {
+        $('#rolereg').modal('show');
+    }
+
+    function modelShow() {
+        $('#inforeg').modal('show');
+    }
+
+    function inforegAjax() {
+        var user = {};
+        user['infoname'] = $('#infoname').val();
+        user['infopwd'] = $('#infopwd').val();
+        user['infoemail'] = $('#infoemail').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/api/infoadd",
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                if(data.res == "success"){
+                    window.alert("添加成功");
+                    $('#myModal').modal('hide');
+                    window.location.reload();
+                }
+            },
+            error: function (e) {
+                window.alert("fail");
+            }
+        });
+    }
+
+    var wholeSelect=$('#alluserinfo');
+    wholeSelect.change(function (e) {
+        var _this=$(this);
+        //判断全选按钮是否选中
+        if (_this.is(':checked')){//选中时的操作
+            $('input[type="checkbox"][class=userinfo]').prop("checked",true);
+        }else{//未选中时的操作
+            $('input[type="checkbox"][class=userinfo]').prop('checked',false);
+        }
+    });
+
+    var wholeSelect=$('#allrole');
+    wholeSelect.change(function (e) {
+        var _this=$(this);
+        //判断全选按钮是否选中
+        if (_this.is(':checked')){//选中时的操作
+            $('input[type="checkbox"][class=rolelist]').prop("checked",true);
+        }else{//未选中时的操作
+            $('input[type="checkbox"][class=rolelist]').prop('checked',false);
+        }
+    });
+
+    var wholeSelect=$('#allbook');
+    wholeSelect.change(function (e) {
+        var _this=$(this);
+        //判断全选按钮是否选中
+        if (_this.is(':checked')){//选中时的操作
+            $('input[type="checkbox"][class=booklist]').prop("checked",true);
+        }else{//未选中时的操作
+            $('input[type="checkbox"][class=booklist]').prop('checked',false);
+        }
+    });
+
+    function setrole() {
+        var len = $('input[type="checkbox"][class=userinfo]:checked').length;
+        //window.alert(selected);
+        if(len != 1){
+            //window.alert(selected.length);
+            window.alert("选择一个用户设定角色");
+        }
+        else{
+
+            $('#myModal').modal('show');
+        }
+
+
+    }
+
+    function deleterole() {
+        var user = {};
+        var id = [];
+        user['id'] = id;
+        user['what'] = 'roleid';
+        var len = $('input[type="checkbox"][class=rolelist]:checked').length;
+        if(len == 0){
+            window.alert("至少选择一个角色");
+        }
+        else{
+            $('input[type="checkbox"][class=rolelist]:checked').each(
+                function (index) {
+                    user['id'].push(this.name);
+                    window.alert(this.name);
+                }
+            );
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/api/delete",
+                data: JSON.stringify(user),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.res == "success"){
+                        window.alert("删除成功");
+                        //$('#myModal').modal('hide');
+                        window.location.reload();
+                    }
+                },
+                error: function (e) {
+                    window.alert("fail");
+                }
+            });
+        }
+    }
+
+    function deletecate() {
+        var user = {};
+        var id = [];
+        user['id'] = id;
+        user['what'] = 'cateid';
+        var len = $('input[type="checkbox"][class=catelist]:checked').length;
+        if(len == 0){
+            window.alert("至少选择一个角色");
+        }
+        else{
+            $('input[type="checkbox"][class=catelist]:checked').each(
+                function (index) {
+                    user['id'].push(this.name);
+                    window.alert(this.name);
+                }
+            );
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/api/delete",
+                data: JSON.stringify(user),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.res == "success"){
+                        window.alert("删除成功");
+                        //$('#myModal').modal('hide');
+                        window.location.reload();
+                    }
+                },
+                error: function (e) {
+                    window.alert("fail");
+                }
+            });
+        }
+    }
+
+    function deletepub() {
+        var user = {};
+        var id = [];
+        user['id'] = id;
+        user['what'] = 'pubid';
+        var len = $('input[type="checkbox"][class=publist]:checked').length;
+        if(len == 0){
+            window.alert("至少选择一个角色");
+        }
+        else{
+            $('input[type="checkbox"][class=publist]:checked').each(
+                function (index) {
+                    user['id'].push(this.name);
+                    window.alert(this.name);
+                }
+            );
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/api/delete",
+                data: JSON.stringify(user),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.res == "success"){
+                        window.alert("删除成功");
+                        //$('#myModal').modal('hide');
+                        window.location.reload();
+                    }
+                },
+                error: function (e) {
+                    window.alert("fail");
+                }
+            });
+        }
+    }
+
+    function deletebook() {
+        var user = {};
+        var id = [];
+        user['id'] = id;
+        user['what'] = 'bookid';
+        var len = $('input[type="checkbox"][class=booklist]:checked').length;
+        if(len == 0){
+            window.alert("至少选择一个角色");
+        }
+        else{
+            $('input[type="checkbox"][class=booklist]:checked').each(
+                function (index) {
+                    user['id'].push(this.name);
+                    window.alert(this.name);
+                }
+            );
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/api/delete",
+                data: JSON.stringify(user),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.res == "success"){
+                        window.alert("删除成功");
+                        //$('#myModal').modal('hide');
+                        window.location.reload();
+                    }
+                },
+                error: function (e) {
+                    window.alert("fail");
+                }
+            });
+        }
+    }
+
+    function deleteuserinfo() {
+        var user = {};
+        var id = [];
+        user['id'] = id;
+        user['what'] = 'userinfo';
+        var len = $('input[type="checkbox"][class=userinfo]:checked').length;
+        if(len == 0){
+            window.alert("至少选择一个角色");
+        }
+        else{
+            $('input[type="checkbox"][class=userinfo]:checked').each(
+                function (index) {
+                    user['id'].push(this.name);
+                    window.alert(this.name);
+                }
+            );
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/api/delete",
+                data: JSON.stringify(user),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.res == "success"){
+                        window.alert("删除成功");
+                        //$('#myModal').modal('hide');
+                        window.location.reload();
+                    }
+                },
+                error: function (e) {
+                    window.alert("fail");
+                }
+            });
+        }
+    }
+
+    function setroleAjax() {
+        window.alert("ajax");
+        var userinfoid;
+        $('input[type="checkbox"][class=userinfo]:checked').each(
+            function (index) {
+                userinfoid = this.name;
+            }
+        );
+        var user = {};
+        //window.alert(userinfoid)
+        user['userinfoid'] = userinfoid;
+        user['roleid'] = [];
+        $('input[type="checkbox"][class=role]:checked').each(
+            function (index) {
+                user['roleid'].push(this.name);
+            }
+        );
+        //window.alert("ajax");
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/api/setrole",
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                if(data.res == "success"){
+                    window.alert("设置成功");
+                    $('#myModal').modal('hide');
+                    window.location.reload();
+                }
+            },
+            error: function (e) {
+                window.alert("fail");
+            }
+        });
+
+    }
+
+
+</script>
+
+</html>

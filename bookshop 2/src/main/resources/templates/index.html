@@ -1,55 +1,171 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<head>
-    <title>Bookshop</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <!--<script th:src="@{/js/register.js}"></script>-->
+<head lang="en">
+    <meta charset="UTF-8">
 
+    <link rel="stylesheet" href="bootstrap-3.3.4/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="Flat-UI-master/dist/css/flat-ui.min.css"/>
+    <script src="bootstrap-3.3.4/dist/js/jquery-1.11.3.min.js"></script>
+    <script src="bootstrap-3.3.4/dist/js/bootstrap.min.js"></script>
+    <script src="Flat-UI-master/dist/js/flat-ui.min.js"></script>
+    <!--<script src="http://desandro.github.io/imagesloaded/imagesloaded.pkgd.min.js"></script>-->
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+    <title></title>
+    <style>
+        #title{
+            font-size:.8rem;
+            line-height:1.2rem;
+            height:2.4rem;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+       .row{
+           margin-top: 20px;;
+        }
+        .center{
+            text-align: center;
+        }
+        .pagination{
+            background: #cccccc;
+        }
+    </style>
+    <script>
+        $(function(){
+            $('#myTabs a').click(function (e) {
+                $(this).tab('show')
+            });
+        })
+    </script>
 </head>
 <body>
+<!-- Static navbar -->
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">这什么东西</span>
+            </button>
+            <a class="navbar-brand" href="/">图书商城</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">首页</a></li>
+                <li><a href="Order.html">我的订单</a></li>
+                <li><a href="/UserInfo">个人中心</a></li>
+                <li><a href="FriendLink.html">友情链接</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right hidden-sm">
+                <!--<li><a href="/Login" th:text="${session.user}!=null?${session.user}:'登陆'">登录</a></li>-->
+                <li><a href="/Login" th:if="${session.user}==null">登录</a></li>
+                <li><a href="/Register" th:if="${session.user}==null">注册</a></li>
+                <li><a th:if="${session.user}!=null" th:text="${session.user}" href="/"></a></li>
+                <li><a th:if="${session.user}!=null" th:text="logout" href="/api/logout"></a></li>
+
+                <li>
+                    <a href="/Cart"><span class="glyphicon glyphicon-shopping-cart">购物车</span></a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+<!--content-->
+<div class="container">
+    <div class="jumbotron">
+        <h1>图书商城</h1>
+        <p>...</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">了解更多</a></p>
+    </div>
+
+    <div class="row">
+    <select id="search">
+        <option value ="isbn">isbn</option>
+        <option value ="title">title</option>
+    </select>
+        <input type="text" placeholder="" id="str"><button class="btn btn-primary btn-lg" onclick="search()">搜索</button>
+    </div>
+
+    <div class="row grid">
+        <div class="grid-item col-sm-4 col-md-3" th:each="book:${books}">
+            <div class="thumbnail">
+            <a th:href="@{'/bookinfo?id='+${book.id}}">
+                <img style="width: 100%; height: 200px; display: block;" alt="100%x200" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNDggMjAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIG1lZXQiIHdpZHRoPSIzNDgiIGhlaWdodD0iMjAwIj48ZGVmcyAvPjxyZWN0IGZpbGw9IiNlZWVlZWUiIHdpZHRoPSIzNDgiIGhlaWdodD0iMjAwIiAvPjxnPjx0ZXh0IHN0eWxlPSJmb250LWZhbWlseTogQXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7IGZvbnQtc2l6ZTogMjJweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IGRvbWluYW50LWJhc2VsaW5lOiBjZW50cmFsOyBmaWxsOiAjYWFhYWFhOyIgeD0iMTMxLjE2IiB5PSIxMDAiPjM0OHgyMDA8L3RleHQ+PC9nPjwvc3ZnPg==" data-src="holder.js/100%x200" data-holder-rendered="true">
+            </a>
+                <div class="caption center">
+                    <p id="title" align="left" th:text="${book.title}"></p>
+                    <p><span>价格:</span><span th:text="${book.unitPrice}">100.00</span></p>
+                    <p><a class="btn btn-primary btn-block" role="button" th:href="@{'/bookinfo?id='+${book.id}}">查看详情</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
 
-<div class="col-sm-5 float-right">
-    <a id="btn-goRegister" href="/register" class="btn btn-danger btn-lg btn-block">注册</a>
-    <button class="btn-primary" th:text="${session.user}">register</button>
+    <nav class="center">
+        <button class="btn btn-primary" type="button" onclick="previousAjax()">上一页</button>
+        <button class="btn btn-primary" type="button" onclick="nextAjax()">下一页</button>
+    </nav>
+
 </div>
 
-
-
-<div class="jumbotron text-center">
-    <h1>BOOK SHOP</h1>
-    <p>-Lometsj</p>
+<!--footer-->
+<div class="navbar navbar-default navbar-static-bottom">
+版权声明区
 </div>
-
-<!--<table>-->
-    <!--<thead>-->
-    <!--<tr>-->
-        <!--<td>编号</td>-->
-        <!--<td>姓名</td>-->
-        <!--<td>年龄</td>-->
-        <!--<td>地址</td>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tbody>-->
-    <!--<tr th:each="book:${booklist}">-->
-        <!--<td th:text="${book.getId()}"></td>-->
-        <!--<td th:text="${book.getTitle()}"></td>-->
-        <!--<td th:text="${book.getIsbn()}"></td>-->
-        <!--<td th:text="${book.getContentDescription()}"></td>-->
-    <!--</tr>-->
-    <!--</tbody>-->
-<!--</table>-->
-
 
 
 </body>
+
 <script>
+    $('.grid').masonry({
+        itemSelector: '.grid-item'
+    });
+    
+    function previousAjax() {
+        $.ajax({
+            type: "POST",
+            url: "/api/previous",
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                window.location.href="/"
+            },
+            error: function (e) {
+
+            }
+        });
+    };
+
+    function nextAjax() {
+        $.ajax({
+            type: "POST",
+            url: "/api/next",
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                window.location.href="/"
+            },
+            error: function (e) {
+
+            }
+        });
+    };
+
+    function search() {
+        var searchWhat = $("#search").val();
+        var str = $("#str").val();
+        if(searchWhat == 'isbn'){
+            window.location.href='/search_i?isbn=' + str;
+        }
+        else if (searchWhat == 'title'){
+            window.location.href='/search_t?title=' + str;
+        }
+
+    }
 
 </script>
 </html>

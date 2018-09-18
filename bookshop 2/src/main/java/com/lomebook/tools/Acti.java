@@ -15,7 +15,9 @@ import java.util.UUID;
 
 public class Acti {
 
-
+    private String fromEmail = "lometsj@foxmail.com";
+    private String passWord = "wnupsbxkgrulbbba";
+    private String host = "smtp.qq.com";
     private static Map< String ,String > codelist = new HashMap<String, String>();
     private String title = "Acti ur Lomebook account";
     private String content = "<h1>Use code below to Acti ur account in Lomebook!</h1>";
@@ -29,11 +31,9 @@ public class Acti {
         return false;
     }
 
-    public void sendEmail(String to){
-        String code = UUID.randomUUID().toString();
-        codelist.put(to,code);
-        String from = "lometsj@foxmail.com";
-        String host = "smtp.qq.com";
+    private void send(String to,String content){
+
+
         // 获取系统属性
         Properties properties = System.getProperties();
 
@@ -45,7 +45,7 @@ public class Acti {
         Session session = Session.getDefaultInstance(properties,new Authenticator(){
             public PasswordAuthentication getPasswordAuthentication()
             {
-                return new PasswordAuthentication("lometsj@foxmail.com", "wnupsbxkgrulbbba"); //发件人邮件用户名、密码
+                return new PasswordAuthentication(fromEmail,passWord); //发件人邮件用户名、密码
             }
         });
 
@@ -54,7 +54,7 @@ public class Acti {
             MimeMessage message = new MimeMessage(session);
 
             // Set From: 头部头字段
-            message.setFrom(new InternetAddress(from));
+            message.setFrom(new InternetAddress(fromEmail));
 
             // Set To: 头部头字段
             message.addRecipient(Message.RecipientType.TO,
@@ -63,8 +63,9 @@ public class Acti {
             // Set Subject: 头部头字段
             message.setSubject(title);
 
+
             // 设置消息体
-            message.setContent(content + "<h3>" + code + "</h3>","text/html");
+            message.setContent(content,"text/html");
 
             // 发送消息
             Transport.send(message);
@@ -72,6 +73,21 @@ public class Acti {
         }catch (MessagingException mex) {
             mex.printStackTrace();
         }
+        return;
+    }
+
+    public void sendactiEmail(String to,String urlHead){
+        String code = UUID.randomUUID().toString();
+        codelist.put(to,code);
+        String content = "请复制链接到浏览器以激活账号\n" + urlHead + "/api/acti?id=" + to + "&code=" + code;
+        send(to,content);
     }
     //private map<int,
+
+    public void sendforgetEmail(String to,String urlHead){
+        String code = UUID.randomUUID().toString();
+        codelist.put(to,code);
+        String content = "请复制链接到浏览器以重置密码\n" + urlHead + "/api/reset?id=" + to + "&code=" + code;
+        send(to,content);
+    }
 }

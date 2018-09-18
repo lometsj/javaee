@@ -1,5 +1,7 @@
 package com.lomebook.enti;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -23,6 +25,8 @@ public class BooksEntity {
 
     @Id
     @Column(name = "Id", nullable = false)
+    @GeneratedValue(generator = "paymentableGenerator")
+    @GenericGenerator(name = "paymentableGenerator", strategy = "native")
     public int getId() {
         return id;
     }

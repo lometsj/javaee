@@ -16,6 +16,8 @@ import org.springframework.data.repository.query.Param;
 public interface Bookrepo extends JpaRepository<BooksEntity,Long> {
 
     BooksEntity findById (int Id);
+    List<BooksEntity> findAllByIsbnLike(String Isbn);
+    List<BooksEntity> findAllByTitleLike(String Title);
 
 
 }

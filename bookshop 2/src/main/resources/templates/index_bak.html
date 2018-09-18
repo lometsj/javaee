@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Bookshop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <!--<script th:src="@{/js/register.js}"></script>-->
+
+</head>
+<body>
+
+
+<div class="col-sm-5 float-right">
+    <a id="btn-goRegister" href="/register" class="btn btn-danger btn-lg btn-block">注册</a>
+    <button class="btn-primary" th:text="${session.user}">register</button>
+</div>
+
+
+
+<div class="jumbotron text-center">
+    <h1>BOOK SHOP</h1>
+    <p>-Lometsj</p>
+</div>
+
+<!--<table>-->
+    <!--<thead>-->
+    <!--<tr>-->
+        <!--<td>编号</td>-->
+        <!--<td>姓名</td>-->
+        <!--<td>年龄</td>-->
+        <!--<td>地址</td>-->
+    <!--</tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr th:each="book:${booklist}">-->
+        <!--<td th:text="${book.getId()}"></td>-->
+        <!--<td th:text="${book.getTitle()}"></td>-->
+        <!--<td th:text="${book.getIsbn()}"></td>-->
+        <!--<td th:text="${book.getContentDescription()}"></td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
+<!--</table>-->
+
+
+
+</body>
+<script>
+
+</script>
+</html>
